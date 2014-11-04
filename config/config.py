@@ -5,22 +5,6 @@ _basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 APP_NAME = "suggestions"
 
 class AppConfig(object):
-    RESOURCES = [
-                    {
-                        '/suggestions/': {
-                            'allowed': ['POST',],
-                            'scope': 'oauth:suggestions:read', #this is an arbitrary string, and adsws will take care of this, but this lets each app decide which permissions adsws should enforce
-                            'description': 'computes Citation Helper suggestions on the POST body',
-                            }
-                    },
-                    {
-                        '/resources': {
-                            'allowed':['GET',],
-                            'scope':'oauth:resources:read',
-                            'description': 'Get this overview',
-                            }
-                    },
-                ]
     MAX_HITS = 10000    
     MAX_INPUT = 500
     CHUNK_SIZE = 100
