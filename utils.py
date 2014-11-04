@@ -16,7 +16,6 @@ import urllib
 from itertools import groupby
 from multiprocessing import Process, Queue, cpu_count
 import simplejson as json
-from flask.ext.solrquery import solr 
 from sqlalchemy import Column, Integer, String, DateTime, Boolean
 from sqlalchemy.ext.declarative import declarative_base, DeclarativeMeta
 from sqlalchemy.dialects import postgresql
