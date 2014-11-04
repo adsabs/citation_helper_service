@@ -106,9 +106,8 @@ class CitationListHarvester(Process):
                 except:
                     citations = []
                 self.result_queue.put({'citations':citations})
-            except PostgresQueryError, e:
-                sys.stderr.write("Postgres metrics data query for %s blew up (%s)" % (bibcode,e))
-                raise
+            except Exception, e:
+                self.result_queue.put("Exception! Postgres metrics data query for %s blew up (%s)" % (bibcode,e))
         return
 
 def get_citing_papers(**args):
@@ -138,6 +137,8 @@ def get_citing_papers(**args):
     cit_list = []
     while num_jobs:
         data = results.get()
+        if 'Exception' in data:
+            raise PostgresQueryError, data
         cit_list += data.get('citations',[])
         num_jobs -= 1
     return cit_list
