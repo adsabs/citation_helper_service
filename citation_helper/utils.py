@@ -3,7 +3,7 @@ Created on Nov 1, 2014
 
 @author: ehenneken
 '''
-
+from flask import current_app
 # general module imports
 import sys
 import os
@@ -21,9 +21,6 @@ from sqlalchemy.ext.declarative import declarative_base, DeclarativeMeta
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import relationship, sessionmaker
 from sqlalchemy import create_engine
-
-# local imports
-from config import config
 
 __all__ = ['get_citations','get_references','get_meta_data']
 
@@ -89,7 +86,7 @@ class CitationListHarvester(Process):
         Process.__init__(self)
         self.task_queue = task_queue
         self.result_queue = result_queue
-        engine = create_engine(config.SQLALCHEMY_DATABASE_URI)
+        engine = create_engine(current_app.config['SQLALCHEMY_DATABASE_URI'])
         Base.metadata.create_all(engine)
         DBSession = sessionmaker(bind=engine)
         self.session = DBSession()
@@ -151,14 +148,14 @@ def get_references(**args):
     # (just an 'OR' query of a list of bibcodes)
     # To restrict the size of the query URL, we split the list of
     # bibcodes up in a list of smaller lists
-    biblists = list(chunks(args['bibcodes'], config.CHUNK_SIZE))
+    biblists = list(chunks(args['bibcodes'], current_app.config['CHUNK_SIZE']))
     for biblist in biblists:
         q = " OR ".join(map(lambda a: "bibcode:%s"%a, biblist))
         try:
             # Get the information from Solr
             # We only need the contents of the 'reference' field (i.e. the list of bibcodes 
             # referenced by the paper at hand)
-            resp = solr_req(config.SOLRQUERY_URL, q=q, fl = 'reference', rows=config.MAX_HITS)
+            resp = solr_req(current_app.config['SOLRQUERY_URL'], q=q, fl = 'reference', rows=current_app.config['MAX_HITS'])
         except SolrReferenceQueryError, e:
             sys.stderr.write("Solr references query for %s blew up (%s)" % (q,e))
             raise
@@ -180,7 +177,7 @@ def get_meta_data(**args):
     q = '%s' % list
     try:
         # Get the information from Solr
-        resp = solr_req(config.SOLRQUERY_URL, q=q, fl = 'bibcode,title,first_author', rows=config.MAX_HITS)
+        resp = solr_req(current_app.config['SOLRQUERY_URL'], q=q, fl = 'bibcode,title,first_author', rows=current_app.config['MAX_HITS'])
     except SolrMetaDataQueryError, e:
         sys.stderr.write("Solr references query for %s blew up (%s)" % (bibcode,e))
         raise
