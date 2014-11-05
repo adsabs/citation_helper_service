@@ -2,7 +2,7 @@ from flask import current_app, Blueprint, request
 from flask.ext.restful import Resource
 import time
 
-from citation_helper_utils import get_suggestions
+from utils.citation_helper import get_suggestions
 
 blueprint = Blueprint(
       'citation_helper',
@@ -16,7 +16,9 @@ class CitationHelper(Resource):
     def post(self):
         if not request.json or not 'bibcodes' in request.json:
             return {'msg': 'no bibcodes found in POST body'}, 400
-        bibcodes = map(lambda a: str(a), request.json['bibcodes'])
+        bibcodes = map(str, request.json['bibcodes'])
+        if len(bibcodes) > current_app.config['MAX_SUBMITTED']:
+            return {'msg': 'number of submitted bibcodes exceeds maximum number'}, 400
         try:
             results = get_suggestions(bibcodes=bibcodes)
         except Exception, err:
