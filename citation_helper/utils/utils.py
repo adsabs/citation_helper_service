@@ -80,7 +80,7 @@ class MetricsModel(Base):
 
 class CitationListHarvester(Process):
     """
-    Class to allow parallel retrieval of citation data from Mongo
+    Class to allow parallel retrieval of citation data from PostgreSQL
     """
     def __init__(self, task_queue, result_queue):
         Process.__init__(self)
@@ -102,8 +102,8 @@ class CitationListHarvester(Process):
                 except:
                     citations = []
                 self.result_queue.put({'citations':citations})
-            except Exception, e:
-                self.result_queue.put("Exception! Postgres metrics data query for %s blew up (%s)" % (bibcode,e))
+            except:
+                self.result_queue.put({'citations':[]})
         return
 
 def get_citing_papers(**args):
