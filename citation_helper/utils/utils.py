@@ -11,7 +11,6 @@ import time
 from datetime import datetime
 import operator
 import glob
-import requests
 import urllib
 from itertools import groupby
 from multiprocessing import Process, Queue, cpu_count
@@ -31,12 +30,6 @@ class SolrReferenceQueryError(Exception):
 
 class SolrMetaDataQueryError(Exception):
     pass
-
-def solr_req(url, **kwargs):
-    kwargs['wt'] = 'json'
-    query_params = urllib.urlencode(kwargs)
-    r = requests.get(url, params=query_params)
-    return r.json()
 
 class AlchemyEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -149,7 +142,9 @@ def get_references(**args):
             # Get the information from Solr
             # We only need the contents of the 'reference' field (i.e. the list of bibcodes 
             # referenced by the paper at hand)
-            resp = solr_req(current_app.config['SOLRQUERY_URL'], q=q, fl = 'reference', rows=current_app.config['MAX_HITS'])
+            params = {'wt':'json', 'q':q, 'fl':'reference', 'rows': current_app.config['MAX_HITS']}
+            query_url = current_app.config['SOLRQUERY_URL'] + "/?" + urllib.urlencode(params)
+            resp = current_app.client.session.get(query_url).json()
         except SolrReferenceQueryError, e:
             sys.stderr.write("Solr references query for %s blew up (%s)" % (q,e))
             raise
@@ -171,7 +166,9 @@ def get_meta_data(**args):
     q = '%s' % list
     try:
         # Get the information from Solr
-        resp = solr_req(current_app.config['SOLRQUERY_URL'], q=q, fl = 'bibcode,title,first_author', rows=current_app.config['MAX_HITS'])
+        params = {'wt':'json', 'q':q, 'fl':'bibcode,title,first_author', 'rows': current_app.config['MAX_HITS']}
+        query_url = current_app.config['SOLRQUERY_URL'] + "/?" + urllib.urlencode(params)
+        resp = current_app.client.session.get(query_url).json()
     except SolrMetaDataQueryError, e:
         sys.stderr.write("Solr references query for %s blew up (%s)" % (bibcode,e))
         raise
