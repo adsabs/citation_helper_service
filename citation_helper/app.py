@@ -2,6 +2,7 @@ import os
 from flask import Flask, g
 from views import blueprint, Resources, CitationHelper
 from flask.ext.restful import Api
+from flask.ext.sqlalchemy import SQLAlchemy
 from client import Client
 
 def create_app():
@@ -18,4 +19,5 @@ def create_app():
     pass
   app.register_blueprint(blueprint)
   app.client = Client(app.config['CLIENT'])
+  app.db = SQLAlchemy(app)
   return app
