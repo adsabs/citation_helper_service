@@ -2,8 +2,8 @@ import os
 from flask import Flask, g
 from views import blueprint, Resources, CitationHelper
 from flask.ext.restful import Api
-from flask.ext.sqlalchemy import SQLAlchemy
 from client import Client
+from utils import db
 
 def create_app():
   api = Api(blueprint)
@@ -19,5 +19,5 @@ def create_app():
     pass
   app.register_blueprint(blueprint)
   app.client = Client(app.config['CLIENT'])
-  app.db = SQLAlchemy(app)
+  db.init_app(app)
   return app

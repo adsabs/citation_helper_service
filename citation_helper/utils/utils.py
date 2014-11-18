@@ -17,10 +17,11 @@ from itertools import groupby
 from multiprocessing import Process, Queue, cpu_count
 import simplejson as json
 from sqlalchemy import Column, Integer, String, DateTime, Boolean
-from sqlalchemy.ext.declarative import declarative_base, DeclarativeMeta
+from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.dialects import postgresql
+from flask.ext.sqlalchemy import SQLAlchemy
 
-__all__ = ['get_citations','get_references','get_meta_data']
+db = SQLAlchemy()
 
 class PostgresQueryError(Exception):
     pass
@@ -54,9 +55,7 @@ class AlchemyEncoder(json.JSONEncoder):
 
         return json.JSONEncoder.default(self, obj)
 
-Base = declarative_base()
-
-class MetricsModel(Base):
+class MetricsModel(db.Model):
   __tablename__='metrics'
 
   id = Column(Integer,primary_key=True)
@@ -84,7 +83,7 @@ class CitationListHarvester(Process):
         Process.__init__(self)
         self.task_queue = task_queue
         self.result_queue = result_queue
-        self.session = current_app.db.session()
+        self.session = db.session()
     def run(self):
         while True:
             bibcode = self.task_queue.get()
