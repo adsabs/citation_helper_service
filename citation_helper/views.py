@@ -12,7 +12,7 @@ blueprint = Blueprint(
 
 class CitationHelper(Resource):
     """computes Citation Helper suggestions on the POST body"""
-    scopes = 'oauth:suggestions:read'
+    scopes = []
     def post(self):
         if not request.json or not 'bibcodes' in request.json:
             return {'msg': 'no bibcodes found in POST body'}, 400
@@ -28,7 +28,7 @@ class CitationHelper(Resource):
 
 class Resources(Resource):
   '''Overview of available resources'''
-  scopes = ['oauth:sample_application:read','oauth_sample_application:logged_in']
+  scopes = []
   def get(self):
     func_list = {}
     for rule in current_app.url_map.iter_rules():
