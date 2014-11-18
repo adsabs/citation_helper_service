@@ -19,8 +19,6 @@ import simplejson as json
 from sqlalchemy import Column, Integer, String, DateTime, Boolean
 from sqlalchemy.ext.declarative import declarative_base, DeclarativeMeta
 from sqlalchemy.dialects import postgresql
-from sqlalchemy.orm import relationship, sessionmaker
-from sqlalchemy import create_engine
 
 __all__ = ['get_citations','get_references','get_meta_data']
 
@@ -86,10 +84,7 @@ class CitationListHarvester(Process):
         Process.__init__(self)
         self.task_queue = task_queue
         self.result_queue = result_queue
-        engine = create_engine(current_app.config['SQLALCHEMY_DATABASE_URI'])
-        Base.metadata.create_all(engine)
-        DBSession = sessionmaker(bind=engine)
-        self.session = DBSession()
+        self.session = current_app.db.session()
     def run(self):
         while True:
             bibcode = self.task_queue.get()
