@@ -7,12 +7,7 @@ from flask import current_app
 # general module imports
 import sys
 import os
-import time
-from datetime import datetime
-import operator
-import glob
 import urllib
-from itertools import groupby
 from multiprocessing import Process, Queue, cpu_count
 import simplejson as json
 from sqlalchemy import Column, Integer, String, DateTime, Boolean
