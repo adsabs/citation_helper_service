@@ -15,6 +15,7 @@ blueprint = Blueprint(
 class CitationHelper(Resource):
     """computes Citation Helper suggestions on the POST body"""
     scopes = []
+    rate_limit = [1000,60*60*24]
     def post(self):
         if not request.json or not 'bibcodes' in request.json:
             return {'msg': 'no bibcodes found in POST body'}, 400
