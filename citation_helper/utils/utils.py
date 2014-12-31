@@ -28,7 +28,7 @@ class CitationListHarvester(Process):
         Process.__init__(self)
         self.task_queue = task_queue
         self.result_queue = result_queue
-        self.session = db.session()
+        self.session = db.session
     def run(self):
         while True:
             bibcode = self.task_queue.get()
