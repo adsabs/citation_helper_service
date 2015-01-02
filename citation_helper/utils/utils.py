@@ -7,9 +7,9 @@ from flask import current_app
 import sys
 import os
 import urllib
-from multiprocessing import Process, Queue, cpu_count
 import simplejson as json
-from database import db, AlchemyEncoder, MetricsModel
+from database import db, MetricsModel
+from sqlalchemy import or_
 
 class PostgresQueryError(Exception):
     pass
@@ -20,63 +20,26 @@ class SolrReferenceQueryError(Exception):
 class SolrMetaDataQueryError(Exception):
     pass
 
-class CitationListHarvester(Process):
-    """
-    Class to allow parallel retrieval of citation data from PostgreSQL
-    """
-    def __init__(self, task_queue, result_queue):
-        Process.__init__(self)
-        self.task_queue = task_queue
-        self.result_queue = result_queue
-        self.session = db.session
-    def run(self):
-        while True:
-            bibcode = self.task_queue.get()
-            if bibcode is None:
-                break
-            try:
-                result = self.session.query(MetricsModel).filter(MetricsModel.bibcode==bibcode).one()
-                try:
-                    citations = result.citations
-                except:
-                    citations = []
-                self.result_queue.put({'citations':citations})
-            except:
-                self.result_queue.put({'citations':[]})
-        return
-
 def get_citing_papers(**args):
-    # create the queues
-    tasks = Queue()
-    results = Queue()
-    # how many threads are there to be used
-    if 'threads' in args:
-        threads = args['threads']
-    else:
-        threads = cpu_count()
     bibcodes = args.get('bibcodes',[])
-    # initialize the "harvesters" (each harvester get the citations for a bibcode)
-    harvesters = [ CitationListHarvester(tasks, results) for i in range(threads)]
-    # start the harvesters
-    for b in harvesters:
-        b.start()
-    # put the bibcodes in the tasks queue
-    num_jobs = 0
-    for bib in bibcodes:
-        tasks.put(bib)
-        num_jobs += 1
-    # add some 'None' values at the end of the tasks list, to faciliate proper closure
-    for i in range(threads):
-        tasks.put(None)
-    # gather all results into one citation dictionary
-    cit_list = []
-    while num_jobs:
-        data = results.get()
-        if 'Exception' in data:
-            raise PostgresQueryError, data
-        cit_list += data.get('citations',[])
-        num_jobs -= 1
-    return cit_list
+    querydata = []
+    citlist = []
+    for bibcode in bibcodes:
+        querydata.append(MetricsModel.bibcode=='%s'%bibcode)
+    condition = or_(*querydata)
+
+    try:
+        results = db.session.query(MetricsModel).filter(condition).all()
+    except PostgresQueryError, e:
+        sys.stderr.write("Postgres query blew up (%s)" % e)
+        raise
+
+    for result in results:
+        try:
+            citlist += result.citations
+        except:
+            continue
+    return citlist
 
 def get_references(**args):
     """
