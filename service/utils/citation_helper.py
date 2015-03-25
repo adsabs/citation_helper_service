@@ -10,8 +10,7 @@ import os
 import operator
 from itertools import groupby
 from flask import current_app
-from utils import get_references
-from utils import get_citing_papers
+from utils import get_data
 from utils import get_meta_data
  
 __all__ = ['get_suggestions']
@@ -30,15 +29,11 @@ def get_suggestions(**args):
     bibcodes = map(lambda a: a.strip(), bibcodes)[:current_app.config['MAX_INPUT']]
     # start processing
     # get the citations for all publications (keeping multiplicity is essential)
-    cits = get_citing_papers(bibcodes=bibcodes)
-    # clean up cits
-    cits = filter(lambda a: len(a) > 0, cits)
-    # get references
-    refs = get_references(bibcodes=bibcodes)
-    # clean up refs
-    refs = filter(lambda a: len(a) > 0, refs)
+    papers = get_data(bibcodes=bibcodes)
+    if "Error" in papers:
+        return papers
     # removes papers from the original list to get candidates
-    papers = filter(lambda a: a not in bibcodes, cits + refs)
+    papers = filter(lambda a: a not in bibcodes, papers)
     # establish frequencies of papers in results
     paperFreq = [(k,len(list(g))) for k, g in groupby(sorted(papers))]
     # and sort them, most frequent first
@@ -47,5 +42,7 @@ def get_suggestions(**args):
     paperFreq = filter(lambda a: a[1] > current_app.config['THRESHOLD_FREQUENCY'], paperFreq)
     # get metadata for suggestions
     meta_dict = get_meta_data(results=paperFreq[:Nsuggestions])
+    if "Error"in meta_dict:
+        return meta_dict
     # return results in required format
     return [{'bibcode':x,'score':y, 'title':meta_dict[x]['title'], 'author':meta_dict[x]['author']} for (x,y) in paperFreq[:Nsuggestions] if x in meta_dict.keys()]
