@@ -9,7 +9,7 @@
 from werkzeug.serving import run_simple
 from werkzeug.wsgi import DispatcherMiddleware
 
-from citation_helper import app as citation_helper
+from service import app as citation_helper
 
 application = DispatcherMiddleware(citation_helper.create_app(),mounts={
   #'/mount1': sample_application2.create_app(), #Could have multiple API-applications at different mount points
