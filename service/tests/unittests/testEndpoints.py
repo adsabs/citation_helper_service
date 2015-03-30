@@ -39,7 +39,7 @@ class TestBadRequests(TestCase):
 
   def testTooManyBibcodes(self):
     '''When more than the maximum input bibcodes are submitted an error should be raised'''
-    bibcodes = ["bibcode"]*(self.app.config.get('MAX_SUBMITTED')+1)
+    bibcodes = ["bibcode"]*(self.app.config.get('CITATION_HELPER_MAX_SUBMITTED')+1)
     r = self.client.post(
           url_for('citation_helper.citationhelper'),
           content_type='application/json',
@@ -59,7 +59,7 @@ class TestGoodRequests(TestCase):
   def test_service_results(self):
     '''Test to see if mock data produces expected results'''
     httpretty.register_uri(
-            httpretty.GET, self.app.config.get('SOLRQUERY_URL'),
+            httpretty.GET, self.app.config.get('CITATION_HELPER_SOLRQUERY_URL'),
             content_type='application/json',
             status=200,
             body="""{
@@ -95,7 +95,7 @@ class TestSolrError(TestCase):
   def test_service_results(self):
     '''Tests for when Solr request gives bad status back'''
     httpretty.register_uri(
-            httpretty.GET, self.app.config.get('SOLRQUERY_URL'),
+            httpretty.GET, self.app.config.get('CITATION_HELPER_SOLRQUERY_URL'),
             content_type='application/json',
             status=500,
             body="""{
@@ -129,7 +129,7 @@ class TestNoRequests(TestCase):
   def test_service_results(self):
     '''Tests for when no results are expected'''
     httpretty.register_uri(
-            httpretty.GET, self.app.config.get('SOLRQUERY_URL'),
+            httpretty.GET, self.app.config.get('CITATION_HELPER_SOLRQUERY_URL'),
             content_type='application/json',
             status=200,
             body="""{

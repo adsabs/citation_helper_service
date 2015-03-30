@@ -22,7 +22,7 @@ class CitationHelper(Resource):
         if not request.json or not 'bibcodes' in request.json:
             return {'msg': 'No results: no bibcodes found in POST body'}, 404
         bibcodes = map(str, request.json['bibcodes'])
-        if len(bibcodes) > current_app.config['MAX_SUBMITTED']:
+        if len(bibcodes) > current_app.config.get('CITATION_HELPER_MAX_SUBMITTED'):
             return {'msg': 'No results: number of submitted bibcodes exceeds maximum number'}, 404
 
         results = get_suggestions(bibcodes=bibcodes)

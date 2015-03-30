@@ -12,6 +12,7 @@ import json
 import httpretty
 from utils import get_data
 from utils import get_meta_data
+from utils import chunks
 
 mockdata = [
     {'id':'1','bibcode':'a','title':['a_title'],'first_author':'a_author','reference':['x','z'],'citation':['p']},
@@ -35,7 +36,7 @@ class TestMethods(TestCase):
   def test_service_results(self):
     '''Test to see if mock methods return expected results'''
     httpretty.register_uri(
-            httpretty.GET, self.app.config.get('SOLRQUERY_URL'),
+            httpretty.GET, self.app.config.get('CITATION_HELPER_SOLRQUERY_URL'),
             content_type='application/json',
             status=200,
             body="""{
@@ -60,6 +61,12 @@ class TestMethods(TestCase):
     scorelist = [('a',3),('b',2)]
     resmeta = get_meta_data(results=scorelist)
     self.assertEqual(resmeta, expected_meta)
+
+  def test_chunks(self):
+    '''Test if the chunks method behaves properly'''
+    list = ['a','b','c','d']
+    expected = [['a'],['b'],['c'],['d']]
+    self.assertEqual([x for x in chunks(list,1)],expected)
 
 if __name__ == '__main__':
   unittest.main()

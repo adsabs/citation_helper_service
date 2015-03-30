@@ -19,15 +19,15 @@ def get_data(**args):
     # (just an 'OR' query of a list of bibcodes)
     # To restrict the size of the query URL, we split the list of
     # bibcodes up in a list of smaller lists
-    biblists = list(chunks(args['bibcodes'], current_app.config['CHUNK_SIZE']))
+    biblists = list(chunks(args['bibcodes'], current_app.config.get('CITATION_HELPER_CHUNK_SIZE')))
     for biblist in biblists:
         q = " OR ".join(map(lambda a: "bibcode:%s"%a, biblist))
         # Get the information from Solr
         # We only need the contents of the 'reference' field (i.e. the list of bibcodes 
         # referenced by the paper at hand)
         headers = {'X-Forwarded-Authorization' : request.headers.get('Authorization')}
-        params = {'wt':'json', 'q':q, 'fl':'reference,citation', 'rows': current_app.config['MAX_HITS']}
-        response = current_app.client.session.get(current_app.config['SOLRQUERY_URL'], params=params, headers=headers)
+        params = {'wt':'json', 'q':q, 'fl':'reference,citation', 'rows': current_app.config['CITATION_HELPER_MAX_HITS']}
+        response = current_app.config.get('CITATION_HELPER_CLIENT').session.get(current_app.config.get('CITATION_HELPER_SOLRQUERY_URL'), params=params, headers=headers)
         if response.status_code != 200:
             return {"Error": "There was a connection error. Please try again later", "Error Info": response.text, "Status Code": response.status_code}
         resp = response.json()
@@ -51,8 +51,8 @@ def get_meta_data(**args):
     q = '%s' % list
     # Get the information from Solr
     headers = {'X-Forwarded-Authorization' : request.headers.get('Authorization')}
-    params = {'wt':'json', 'q':q, 'fl':'bibcode,title,first_author', 'rows': current_app.config['MAX_HITS']}
-    response = current_app.client.session.get(current_app.config['SOLRQUERY_URL'], params=params, headers=headers)
+    params = {'wt':'json', 'q':q, 'fl':'bibcode,title,first_author', 'rows': current_app.config.get('CITATION_HELPER_MAX_HITS')}
+    response = current_app.config.get('CITATION_HELPER_CLIENT').session.get(current_app.config.get('CITATION_HELPER_SOLRQUERY_URL'), params=params, headers=headers)
     if response.status_code != 200:
         return {"Error": "There was a connection error. Please try again later", "Error Info": response.text, "Status Code": response.status_code}
     resp = response.json()
