@@ -31,7 +31,7 @@ def create_app(blueprint_only=False):
     pass
 
   if not hasattr(app.config,'CITATION_HELPER_API_TOKEN'):
-    app.config['GRAPHICS_API_TOKEN'] = None
+    app.config['CITATION_HELPER_API_TOKEN'] = None
   app.config['CITATION_HELPER_CLIENT'] = Client({'TOKEN':app.config.get('CITATION_HELPER_API_TOKEN')})
 
   blueprint = _create_blueprint_()
