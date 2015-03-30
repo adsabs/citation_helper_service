@@ -24,9 +24,9 @@ def get_suggestions(**args):
     if len(bibcodes) == 0:
         return []
     # Any overrides for default values?
-    Nsuggestions = current_app.config['NUMBER_SUGGESTIONS']
+    Nsuggestions = current_app.config.get('CITATION_HELPER_NUMBER_SUGGESTIONS')
     # get rid of potential trailing spaces
-    bibcodes = map(lambda a: a.strip(), bibcodes)[:current_app.config['MAX_INPUT']]
+    bibcodes = map(lambda a: a.strip(), bibcodes)[:current_app.config.get('CITATION_HELPER_MAX_INPUT')]
     # start processing
     # get the citations for all publications (keeping multiplicity is essential)
     papers = get_data(bibcodes=bibcodes)
@@ -39,7 +39,7 @@ def get_suggestions(**args):
     # and sort them, most frequent first
     paperFreq = sorted(paperFreq, key=operator.itemgetter(1),reverse=True)
     # remove all papers with frequencies smaller than threshold
-    paperFreq = filter(lambda a: a[1] > current_app.config['THRESHOLD_FREQUENCY'], paperFreq)
+    paperFreq = filter(lambda a: a[1] > current_app.config.get('CITATION_HELPER_THRESHOLD_FREQUENCY'), paperFreq)
     # get metadata for suggestions
     meta_dict = get_meta_data(results=paperFreq[:Nsuggestions])
     if "Error"in meta_dict:
