@@ -27,7 +27,7 @@ def get_data(**args):
         # referenced by the paper at hand)
         headers = {'X-Forwarded-Authorization' : request.headers.get('Authorization')}
         params = {'wt':'json', 'q':q, 'fl':'reference,citation', 'rows': current_app.config['CITATION_HELPER_MAX_HITS']}
-        response = current_app.config.get('CITATION_HELPER_CLIENT').session.get(current_app.config.get('CITATION_HELPER_SOLRQUERY_URL'), params=params, headers=headers)
+        response = current_app.config.get('CITATION_HELPER_CLIENT').session.get(current_app.config.get('CITATION_HELPER_SOLRQUERY_URL'), params=params)
         if response.status_code != 200:
             return {"Error": "There was a connection error. Please try again later", "Error Info": response.text, "Status Code": response.status_code}
         resp = response.json()

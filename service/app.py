@@ -30,9 +30,7 @@ def create_app(blueprint_only=False):
   except IOError:
     pass
 
-  if not hasattr(app.config,'CITATION_HELPER_API_TOKEN'):
-    app.config['CITATION_HELPER_API_TOKEN'] = None
-  app.config['CITATION_HELPER_CLIENT'] = Client({'TOKEN':app.config.get('CITATION_HELPER_API_TOKEN')})
+  app.config['CITATION_HELPER_CLIENT'] = Client({'TOKEN':app.config.get('CITATION_HELPER_API_TOKEN',None)})
 
   blueprint = _create_blueprint_()
   api = Api(blueprint)
