@@ -24,6 +24,22 @@ mockdata = [
     {'id':'7','bibcode':'p','title':['p_title'],'first_author':'p_author','reference':[],'citation':[]}
     ]
 
+class TestConfig(TestCase):
+  '''Check if config has necessary entries'''
+  def create_app(self):
+    '''Create the wsgi application'''
+    app_ = app.create_app()
+    return app_
+
+  def test_config_values(self):
+    '''Check if all required config variables are there'''
+    required = ["CITATION_HELPER_MAX_HITS","CITATION_HELPER_MAX_INPUT","CITATION_HELPER_MAX_SUBMITTED","CITATION_HELPER_CHUNK_SIZE","CITATION_HELPER_NUMBER_SUGGESTIONS","CITATION_HELPER_THRESHOLD_FREQUENCY","CITATION_HELPER_SOLRQUERY_URL","CITATION_HELPER_API_TOKEN","DISCOVERER_PUBLISH_ENDPOINT","DISCOVERER_SELF_PUBLISH"]
+    missing = [x for x in required if x not in self.app.config.keys()]
+    self.assertTrue(len(missing)==0)
+    # Check if API has an actual value
+    print self.app.config.get('CITATION_HELPER_API_TOKEN',None)
+    self.assertTrue(self.app.config.get('CITATION_HELPER_API_TOKEN',None) != None)
+
 class TestMethods(TestCase):
   '''Check if methods return expected results'''
 
