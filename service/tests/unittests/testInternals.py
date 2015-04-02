@@ -37,8 +37,8 @@ class TestConfig(TestCase):
     missing = [x for x in required if x not in self.app.config.keys()]
     self.assertTrue(len(missing)==0)
     # Check if API has an actual value
-    print self.app.config.get('CITATION_HELPER_API_TOKEN',None)
-    self.assertTrue(self.app.config.get('CITATION_HELPER_API_TOKEN',None) != None)
+    if os.path.exists("%s/local_config.py" % PROJECT_HOME):
+      self.assertTrue(self.app.config.get('CITATION_HELPER_API_TOKEN',None) != None)
 
 class TestMethods(TestCase):
   '''Check if methods return expected results'''
