@@ -34,8 +34,9 @@ class TestBadRequests(TestCase):
     r = self.client.post(
           url_for('citation_helper.citationhelper'),
           data=dict(bibcodes=[]))
-    self.assertTrue(r.status_code == 404)
-    self.assertTrue(r.json.get('msg') == 'No results: no bibcodes found in POST body')
+    self.assertTrue(r.status_code == 200)
+    self.assertTrue('Error' in r.json)
+    self.assertTrue(r.json.get('Error') == 'Unable to get results!')
 
   def testTooManyBibcodes(self):
     '''When more than the maximum input bibcodes are submitted an error should be raised'''
@@ -44,8 +45,9 @@ class TestBadRequests(TestCase):
           url_for('citation_helper.citationhelper'),
           content_type='application/json',
           data=json.dumps({'bibcodes':bibcodes}))
-    self.assertTrue(r.status_code == 404)
-    self.assertTrue(r.json.get('msg') == 'No results: number of submitted bibcodes exceeds maximum number')
+    self.assertTrue(r.status_code == 200)
+    self.assertTrue('Error' in r.json)
+    self.assertTrue(r.json.get('Error') == 'Unable to get results!')
 
 class TestGoodRequests(TestCase):
   '''Tests for when non-trivial results are expected'''
@@ -146,8 +148,9 @@ class TestNoRequests(TestCase):
           content_type='application/json',
           data=json.dumps({'bibcodes':bibcodes}))
 
-    self.assertTrue(r.status_code == 404)
-    self.assertTrue(r.json.get('msg') == 'No results: could not find anything to suggest')
+    self.assertTrue(r.status_code == 200)
+    self.assertTrue('Error' in r.json)
+    self.assertTrue(r.json.get('Error') == 'Unable to get results!')
 
 if __name__ == '__main__':
   unittest.main()
