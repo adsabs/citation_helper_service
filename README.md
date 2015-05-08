@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/adsabs/citation_helper_service.svg?branch=master)](https://travis-ci.org/adsabs/citation_helper_service)
+[![Coverage Status](https://coveralls.io/repos/adsabs/citation_helper_service/badge.svg)](https://coveralls.io/r/adsabs/citation_helper_service)
+
 Start with
 
 	python wsgi.py
