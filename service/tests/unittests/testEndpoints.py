@@ -66,7 +66,7 @@ class TestBadRequests(TestCase):
     def testNoBibcodesSubmitted(self):
         '''When no input bibcodes are submitted an error should be raised'''
         r = self.client.post(
-            url_for('citation_helper.citationhelper'),
+            url_for('citationhelper'),
             data=dict(bibcodes=[]))
         self.assertTrue(r.status_code == 200)
         self.assertTrue('Error' in r.json)
@@ -78,7 +78,7 @@ class TestBadRequests(TestCase):
         bibcodes = ["bibcode"] * \
             (self.app.config.get('CITATION_HELPER_MAX_SUBMITTED') + 1)
         r = self.client.post(
-            url_for('citation_helper.citationhelper'),
+            url_for('citationhelper'),
             content_type='application/json',
             data=json.dumps({'bibcodes': bibcodes}))
         self.assertTrue(r.status_code == 200)
@@ -121,7 +121,7 @@ class TestGoodRequests(TestCase):
         bibcodes = ['a', 'b', 'c']
 
         r = self.client.post(
-            url_for('citation_helper.citationhelper'),
+            url_for('citationhelper'),
             content_type='application/json',
             data=json.dumps({'bibcodes': bibcodes}))
 
@@ -157,7 +157,7 @@ class TestSolrError(TestCase):
         bibcodes = ['a', 'b', 'c']
 
         r = self.client.post(
-            url_for('citation_helper.citationhelper'),
+            url_for('citationhelper'),
             content_type='application/json',
             data=json.dumps({'bibcodes': bibcodes}))
 
@@ -194,7 +194,7 @@ class TestNoRequests(TestCase):
         bibcodes = ['a', 'b', 'c']
 
         r = self.client.post(
-            url_for('citation_helper.citationhelper'),
+            url_for('citationhelper'),
             content_type='application/json',
             data=json.dumps({'bibcodes': bibcodes}))
 

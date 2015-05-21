@@ -9,6 +9,7 @@ import sys
 import os
 import urllib
 import simplejson as json
+from client import client
 
 
 def get_data(**args):
@@ -33,7 +34,7 @@ def get_data(**args):
                    request.headers.get('Authorization')}
         params = {'wt': 'json', 'q': q, 'fl': 'reference,citation',
                   'rows': _app.config['CITATION_HELPER_MAX_HITS']}
-        response = _app.config.get('CITATION_HELPER_CLIENT').session.get(
+        response = client().get(
             _app.config.get('CITATION_HELPER_SOLRQUERY_URL'),
             params=params)
         if response.status_code != 200:
@@ -65,7 +66,7 @@ def get_meta_data(**args):
                request.headers.get('Authorization')}
     params = {'wt': 'json', 'q': q, 'fl': 'bibcode,title,first_author',
               'rows': _app.config.get('CITATION_HELPER_MAX_HITS')}
-    response = _app.config.get('CITATION_HELPER_CLIENT').session.get(
+    response = client().get(
         _app.config.get('CITATION_HELPER_SOLRQUERY_URL'), params=params,
         headers=headers)
     if response.status_code != 200:
