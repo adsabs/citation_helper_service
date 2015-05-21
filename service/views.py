@@ -1,17 +1,7 @@
-from flask import current_app, Blueprint, request
+from flask import current_app, request
 from flask.ext.restful import Resource
 from flask.ext.discoverer import advertise
-import time
-import inspect
-import sys
-
-from utils.citation_helper import get_suggestions
-
-blueprint = Blueprint(
-    'citation_helper',
-    __name__,
-    static_folder=None,
-)
+from citation_helper import get_suggestions
 
 
 class CitationHelper(Resource):
