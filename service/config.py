@@ -23,7 +23,7 @@ CITATION_HELPER_LOGGING = {
             'formatter': 'default',
             'level': 'INFO',
             'class': 'logging.handlers.TimedRotatingFileHandler',
-            'filename': '/tmp/citation_helper.log',
+            'filename': '/tmp/citation_helper_app.log',
         },
         'console': {
             'formatter': 'default',
