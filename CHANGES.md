@@ -1,3 +1,7 @@
+### 1.0.2
+
+* cleanup of code, comments in config
+
 ### 1.0.1
 
 * Add AUTHOR.md, CONTRIBUTING.md, CHANGES.md

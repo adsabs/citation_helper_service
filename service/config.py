@@ -1,12 +1,17 @@
-CITATION_HELPER_SECRET_KEY = 'this should be changed'
+# Maximum number of rows to be returned from Solr
 CITATION_HELPER_MAX_HITS = 10000
+# Maximum number of bibcodes in input (excess will be ignored)
 CITATION_HELPER_MAX_INPUT = 500
+# Maximum number allowed in submitted bibcodes
 CITATION_HELPER_MAX_SUBMITTED = 100
+# Bibcode input list will be split into chunks of this size
 CITATION_HELPER_CHUNK_SIZE = 100
+# The maximum number of suggestions returned by the service
 CITATION_HELPER_NUMBER_SUGGESTIONS = 10
+# Minimal score for papers to be included in results
 CITATION_HELPER_THRESHOLD_FREQUENCY = 1
-API_URL = 'https://api.adsabs.harvard.edu'
-CITATION_HELPER_SOLRQUERY_URL = '%s/v1/search/query' % API_URL
+# Where to query Solr
+CITATION_HELPER_SOLR_PATH = 'https://api.adsabs.harvard.edu/v1/search/query'
 # Config for logging
 CITATION_HELPER_LOGGING = {
     'version': 1,
