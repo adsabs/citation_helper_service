@@ -3,7 +3,7 @@ Created on Nov 1, 2014
 
 @author: ehenneken
 '''
-from flask import current_app as _app
+from flask import current_app
 from flask import request
 import sys
 import os
@@ -24,7 +24,7 @@ def get_data(**args):
     # bibcodes up in a list of smaller lists
     biblists = list(
         chunks(args['bibcodes'],
-               _app.config.get('CITATION_HELPER_CHUNK_SIZE')))
+               current_app.config.get('CITATION_HELPER_CHUNK_SIZE')))
     for biblist in biblists:
         q = " OR ".join(map(lambda a: "bibcode:%s" % a, biblist))
         # Get the information from Solr
@@ -33,10 +33,10 @@ def get_data(**args):
         headers = {'X-Forwarded-Authorization':
                    request.headers.get('Authorization')}
         params = {'wt': 'json', 'q': q, 'fl': 'reference,citation',
-                  'rows': _app.config['CITATION_HELPER_MAX_HITS']}
+                  'rows': current_app.config['CITATION_HELPER_MAX_HITS']}
         response = client().get(
-            _app.config.get('CITATION_HELPER_SOLRQUERY_URL'),
-            params=params)
+            current_app.config.get('CITATION_HELPER_SOLR_PATH'),
+            params=params, headers=headers)
         if response.status_code != 200:
             return {"Error": "There was a connection error",
                     "Error Info": response.text,
@@ -65,9 +65,9 @@ def get_meta_data(**args):
     headers = {'X-Forwarded-Authorization':
                request.headers.get('Authorization')}
     params = {'wt': 'json', 'q': q, 'fl': 'bibcode,title,first_author',
-              'rows': _app.config.get('CITATION_HELPER_MAX_HITS')}
+              'rows': current_app.config.get('CITATION_HELPER_MAX_HITS')}
     response = client().get(
-        _app.config.get('CITATION_HELPER_SOLRQUERY_URL'), params=params,
+        current_app.config.get('CITATION_HELPER_SOLR_PATH'), params=params,
         headers=headers)
     if response.status_code != 200:
         return {"Error": "There was a connection error",

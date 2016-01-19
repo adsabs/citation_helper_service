@@ -100,7 +100,7 @@ class TestGoodRequests(TestCase):
         '''Test to see if mock data produces expected results'''
         httpretty.register_uri(
             httpretty.GET, self.app.config.get(
-                'CITATION_HELPER_SOLRQUERY_URL'),
+                'CITATION_HELPER_SOLR_PATH'),
             content_type='application/json',
             status=200,
             body="""{
@@ -143,7 +143,7 @@ class TestSolrError(TestCase):
         '''Tests for when Solr request gives bad status back'''
         httpretty.register_uri(
             httpretty.GET, self.app.config.get(
-                'CITATION_HELPER_SOLRQUERY_URL'),
+                'CITATION_HELPER_SOLR_PATH'),
             content_type='application/json',
             status=500,
             body="""{
@@ -180,7 +180,7 @@ class TestNoRequests(TestCase):
         '''Tests for when no results are expected'''
         httpretty.register_uri(
             httpretty.GET, self.app.config.get(
-                'CITATION_HELPER_SOLRQUERY_URL'),
+                'CITATION_HELPER_SOLR_PATH'),
             content_type='application/json',
             status=200,
             body="""{

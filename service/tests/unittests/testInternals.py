@@ -73,7 +73,7 @@ class TestConfig(TestCase):
                     "CITATION_HELPER_CHUNK_SIZE",
                     "CITATION_HELPER_NUMBER_SUGGESTIONS",
                     "CITATION_HELPER_THRESHOLD_FREQUENCY",
-                    "CITATION_HELPER_SOLRQUERY_URL",
+                    "CITATION_HELPER_SOLR_PATH",
                     "DISCOVERER_PUBLISH_ENDPOINT",
                     "DISCOVERER_SELF_PUBLISH"]
         missing = [x for x in required if x not in self.app.config.keys()]
@@ -98,7 +98,7 @@ class TestMethods(TestCase):
         '''Test to see if mock methods return expected results'''
         httpretty.register_uri(
             httpretty.GET, self.app.config.get(
-                'CITATION_HELPER_SOLRQUERY_URL'),
+                'CITATION_HELPER_SOLR_PATH'),
             content_type='application/json',
             status=200,
             body="""{
