@@ -1,3 +1,4 @@
+import os
 # Maximum number of rows to be returned from Solr
 CITATION_HELPER_MAX_HITS = 10000
 # Maximum number of bibcodes in input (excess will be ignored)
@@ -12,6 +13,8 @@ CITATION_HELPER_NUMBER_SUGGESTIONS = 10
 CITATION_HELPER_THRESHOLD_FREQUENCY = 1
 # Where to query Solr
 CITATION_HELPER_SOLR_PATH = 'https://api.adsabs.harvard.edu/v1/search/query'
+# In what environment are we?
+ENVIRONMENT = os.getenv('ENVIRONMENT', 'staging').lower()
 # Config for logging
 CITATION_HELPER_LOGGING = {
     'version': 1,
@@ -28,7 +31,7 @@ CITATION_HELPER_LOGGING = {
             'formatter': 'default',
             'level': 'INFO',
             'class': 'logging.handlers.TimedRotatingFileHandler',
-            'filename': '/tmp/citation_helper_app.log',
+            'filename': '/tmp/citation_helper_service.app.{}.log'.format(ENVIRONMENT),
         },
         'console': {
             'formatter': 'default',

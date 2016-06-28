@@ -1,3 +1,7 @@
+### 1.0.3
+
+* update of logfile naming
+
 ### 1.0.2
 
 * cleanup of code, comments in config
