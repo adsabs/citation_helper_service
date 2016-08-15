@@ -1,3 +1,7 @@
+### 1.0.4
+
+* removal of Consul dependencies
+
 ### 1.0.3
 
 * update of logfile naming
