@@ -161,9 +161,9 @@ class TestSolrError(TestCase):
             content_type='application/json',
             data=json.dumps({'bibcodes': bibcodes}))
 
-        self.assertTrue(r.status_code == 500)
+        self.assertTrue(r.status_code == 200)
         self.assertTrue('Error' in r.json)
-        self.assertTrue('connection error' in r.json.get('Error'))
+        self.assertTrue('Unable to get results' in r.json.get('Error'))
 
 
 class TestNoRequests(TestCase):

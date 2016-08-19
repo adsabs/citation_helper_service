@@ -1,3 +1,7 @@
+### 1.0.5
+
+* Update of error handling
+
 ### 1.0.4
 
 * removal of Consul dependencies
