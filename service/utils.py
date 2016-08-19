@@ -38,7 +38,7 @@ def get_data(**args):
             current_app.config.get('CITATION_HELPER_SOLR_PATH'),
             params=params, headers=headers)
         if response.status_code != 200:
-            return {"Error": "There was a connection error",
+            return {"Error": "Unable to get results!",
                     "Error Info": response.text,
                     "Status Code": response.status_code}
         resp = response.json()
@@ -70,7 +70,7 @@ def get_meta_data(**args):
         current_app.config.get('CITATION_HELPER_SOLR_PATH'), params=params,
         headers=headers)
     if response.status_code != 200:
-        return {"Error": "There was a connection error",
+        return {"Error": "Unable to get results!",
                 "Error Info": response.text,
                 "Status Code": response.status_code}
     resp = response.json()
