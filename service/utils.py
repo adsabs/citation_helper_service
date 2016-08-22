@@ -81,7 +81,7 @@ def get_meta_data(**args):
             title = doc['title'][0]
         author = 'NA'
         if 'first_author' in doc:
-            author = "%s,+" % doc['first_author'].split(',')[0]
+            author = "%s et al." % doc['first_author']
         data_dict[doc['bibcode']] = {'title': title, 'author': author}
     return data_dict
 
