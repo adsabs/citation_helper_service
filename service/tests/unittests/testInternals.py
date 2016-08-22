@@ -116,13 +116,13 @@ class TestMethods(TestCase):
         results = get_data(bibcodes=bibcodes)
         self.assertEqual(results, expected_papers)
 
-        expected_meta = {u'a': {'author': u'a_author,+', 'title': u'a_title'},
-                         u'c': {'author': u'c_author,+', 'title': u'c_title'},
-                         u'b': {'author': u'b_author,+', 'title': u'b_title'},
-                         u'p': {'author': u'p_author,+', 'title': u'p_title'},
-                         u'y': {'author': u'y_author,+', 'title': u'y_title'},
-                         u'x': {'author': u'x_author,+', 'title': u'x_title'},
-                         u'z': {'author': u'z_author,+', 'title': u'z_title'}}
+        expected_meta = {u'a': {'author': u'a_author et al.', 'title': u'a_title'},
+                         u'c': {'author': u'c_author et al.', 'title': u'c_title'},
+                         u'b': {'author': u'b_author et al.', 'title': u'b_title'},
+                         u'p': {'author': u'p_author et al.', 'title': u'p_title'},
+                         u'y': {'author': u'y_author et al.', 'title': u'y_title'},
+                         u'x': {'author': u'x_author et al.', 'title': u'x_title'},
+                         u'z': {'author': u'z_author et al.', 'title': u'z_title'}}
         scorelist = [('a', 3), ('b', 2)]
         resmeta = get_meta_data(results=scorelist)
         self.assertEqual(resmeta, expected_meta)

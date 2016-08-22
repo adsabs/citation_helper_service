@@ -1,3 +1,7 @@
+### 1.0.6
+
+* Minor update in output
+
 ### 1.0.5
 
 * Update of error handling

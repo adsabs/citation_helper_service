@@ -112,11 +112,11 @@ class TestGoodRequests(TestCase):
             }}""" % json.dumps(mockdata))
 
         expected = [{u'title': u'p_title', u'bibcode': u'p', u'score': 3,
-                     u'author': u'p_author,+'},
+                     u'author': u'p_author et al.'},
                     {u'title': u'x_title', u'bibcode': u'x',
-                        u'score': 2, u'author': u'x_author,+'},
+                        u'score': 2, u'author': u'x_author et al.'},
                     {u'title': u'y_title', u'bibcode': u'y', u'score': 2,
-                     u'author': u'y_author,+'}]
+                     u'author': u'y_author et al.'}]
 
         bibcodes = ['a', 'b', 'c']
 
