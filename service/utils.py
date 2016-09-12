@@ -39,7 +39,7 @@ def get_data(**args):
             params=params, headers=headers)
         if response.status_code != 200:
             return {"Error": "Unable to get results!",
-                    "Error Info": response.text,
+                    "Error Info": "Solr response: %s" % str(response.text),
                     "Status Code": response.status_code}
         resp = response.json()
         # Collect all bibcodes in a list (do NOT remove multiplicity)

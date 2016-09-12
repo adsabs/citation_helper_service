@@ -1,3 +1,7 @@
+### 1.0.7
+
+* Improvement of error logging from Solr request
+
 ### 1.0.6
 
 * Minor update in output
