@@ -28,7 +28,10 @@ class CitationHelper(Resource):
 
         results = get_suggestions(bibcodes=bibcodes)
         if "Error" in results:
-            current_app.logger.error('Citation Helper request request blew up')
+            msg = 'Citation Helper request request blew up'
+            if 'Error Info' in results:
+                msg += ' (%s)' % str(results['Error Info'])
+            current_app.logger.error(msg)
             return results, 200
 
         if results:
