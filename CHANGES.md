@@ -1,3 +1,7 @@
+### 1.0.8
+
+* requirements.txt update and cleanup
+
 ### 1.0.7
 
 * Improvement of error logging from Solr request

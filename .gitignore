@@ -12,12 +12,12 @@ var
 sdist
 develop-eggs
 .installed.cfg
-
+venv
 # Installer logs
 pip-log.txt
 
 # Unit test / coverage reports
-.coverage
+.coverage*
 .tox
 
 #Translations
