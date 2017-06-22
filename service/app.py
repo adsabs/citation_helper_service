@@ -1,7 +1,7 @@
 from flask import Flask
 from views import CitationHelper
-from flask.ext.restful import Api
-from flask.ext.discoverer import Discoverer
+from flask_restful import Api
+from flask_discoverer import Discoverer
 import logging.config
 
 
