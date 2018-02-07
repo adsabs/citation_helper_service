@@ -1,20 +1,16 @@
-import sys
 import os
-PROJECT_HOME = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), '../../'))
-sys.path.append(PROJECT_HOME)
 from flask_testing import TestCase
 from flask import request
 from flask import url_for, Flask
 import unittest
 import requests
 import time
-import app
+from citation_helper_service import app
 import json
 import httpretty
-from utils import get_data
-from utils import get_meta_data
-from utils import chunks
+from citation_helper_service.utils import get_data
+from citation_helper_service.utils import get_meta_data
+from citation_helper_service.utils import chunks
 
 mockdata = [
     {'id': '1', 'bibcode': 'a',
@@ -78,11 +74,6 @@ class TestConfig(TestCase):
                     "DISCOVERER_SELF_PUBLISH"]
         missing = [x for x in required if x not in self.app.config.keys()]
         self.assertTrue(len(missing) == 0)
-        # Check if API has an actual value
-        if os.path.exists("%s/local_config.py" % PROJECT_HOME):
-            self.assertTrue(
-                self.app.config.get('CITATION_HELPER_API_TOKEN', None) != None)
-
 
 class TestMethods(TestCase):
 

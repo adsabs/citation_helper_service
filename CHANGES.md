@@ -1,3 +1,7 @@
+### 1.0.9
+
+* App instantiation through ADSFlask (ADSMicroserviceUtils)
+
 ### 1.0.8
 
 * requirements.txt update and cleanup
