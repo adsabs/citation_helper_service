@@ -1,3 +1,4 @@
+git+https://github.com/adsabs/ADSMicroserviceUtils.git@v1.0.2
 Flask==0.12
 Flask-RESTful==0.3.5
 Flask-SQLAlchemy==2.1
@@ -11,15 +12,12 @@ argparse==1.2.1
 click==6.6
 colorama==0.2.5
 coverage==4.3.1
-coveralls==1.1
 docopt==0.6.2
-flask-discoverer==0.0.2
 futures==3.0.5
 gevent==1.1.2
 greenlet==0.4.11
 gunicorn==19.6.0
 html5lib==0.999
-httpretty==0.8.14
 itsdangerous==0.24
 meld3==1.0.2
 python-dateutil==2.6.0

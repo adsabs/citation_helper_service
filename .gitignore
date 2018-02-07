@@ -1,3 +1,4 @@
+.cache
 *.py[co]
 *.swp
 # Packages
