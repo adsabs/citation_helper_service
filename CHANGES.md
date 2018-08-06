@@ -1,3 +1,12 @@
+
+### 1.0.11
+ 
+* Enabled JSON stdout logging and HTTP connection pool
+    
+### 1.0.10
+ 
+* Added Dockerfile and local config
+
 ### 1.0.9
 
 * App instantiation through ADSFlask (ADSMicroserviceUtils)
