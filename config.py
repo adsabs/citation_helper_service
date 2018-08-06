@@ -1,4 +1,5 @@
 import os
+LOG_STDOUT = True
 # Maximum number of rows to be returned from Solr
 CITATION_HELPER_MAX_HITS = 10000
 # Maximum number of bibcodes in input (excess will be ignored)
