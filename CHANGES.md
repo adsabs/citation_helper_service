@@ -1,4 +1,8 @@
 
+### 1.0.14
+
+* use user's token in requests
+
 ### 1.0.13
 
 * Updated adsmutils requirement
