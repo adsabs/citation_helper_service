@@ -30,8 +30,8 @@ def get_data(**args):
         # Get the information from Solr
         # We only need the contents of the 'reference' field (i.e. the
         # list of bibcodes referenced by the paper at hand)
-        headers = {'X-Forwarded-Authorization':
-                   request.headers.get('Authorization')}
+        headers = {'Authorization':
+                   request.headers.get('X-Forwarded-Authorization', request.headers.get('Authorization', ''))}
         params = {'wt': 'json', 'q': q, 'fl': 'reference,citation',
                   'rows': current_app.config['CITATION_HELPER_MAX_HITS']}
         response = client().get(
