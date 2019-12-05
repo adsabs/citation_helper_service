@@ -9,7 +9,7 @@ import sys
 import os
 import urllib
 import simplejson as json
-from client import client
+from client import Client
 
 
 def get_data(**args):
@@ -30,13 +30,11 @@ def get_data(**args):
         # Get the information from Solr
         # We only need the contents of the 'reference' field (i.e. the
         # list of bibcodes referenced by the paper at hand)
-        headers = {'Authorization':
-                   request.headers.get('X-Forwarded-Authorization', request.headers.get('Authorization', ''))}
         params = {'wt': 'json', 'q': q, 'fl': 'reference,citation',
                   'rows': current_app.config['CITATION_HELPER_MAX_HITS']}
-        response = client().get(
+        response = Client().get(
             current_app.config.get('CITATION_HELPER_SOLR_PATH'),
-            params=params, headers=headers)
+            params=params)
         if response.status_code != 200:
             return {"Error": "Unable to get results!",
                     "Error Info": "Solr response: %s" % str(response.text),
@@ -62,13 +60,11 @@ def get_meta_data(**args):
     list = " OR ".join(map(lambda a: "bibcode:%s" % a, bibcodes))
     q = '%s' % list
     # Get the information from Solr
-    headers = {'X-Forwarded-Authorization':
-               request.headers.get('Authorization')}
     params = {'wt': 'json', 'q': q, 'fl': 'bibcode,title,first_author',
               'rows': current_app.config.get('CITATION_HELPER_MAX_HITS')}
-    response = client().get(
-        current_app.config.get('CITATION_HELPER_SOLR_PATH'), params=params,
-        headers=headers)
+    response = Client().get(
+        current_app.config.get('CITATION_HELPER_SOLR_PATH'), params=params
+        )
     if response.status_code != 200:
         return {"Error": "Unable to get results!",
                 "Error Info": response.text,

@@ -1,6 +1,5 @@
 from flask import current_app
-
-client = lambda: Client(current_app.config).session
+from flask import request
 
 
 class Client:
@@ -9,15 +8,21 @@ class Client:
     place to set application specific parameters, such as the oauth2
     authorization header
     """
-    def __init__(self, config):
+    def __init__(self):
         """
         Constructor
         :param client_config: configuration dictionary of the client
         """
 
-        self.session = current_app.client # Use HTTP pool provided by adsmutils ADSFlask
-        self.token = config.get('CITATION_HELPER_API_TOKEN')
-        if self.token:
-            self.session.headers.update(
-                {'Authorization': 'Bearer %s' % self.token}
-            )
+        self.client = current_app.client # Use HTTP pool provided by adsmutils ADSFlask
+    
+    def get(self, *args, **kwargs):
+        
+        headers = {'Authorization':
+               request.headers.get('X-Forwarded-Authorization', request.headers.get('Authorization', ''))}
+        if 'headers' in kwargs:
+            kwargs['headers'].update(headers)
+        else:
+            kwargs['headers'] = headers
+        
+        return self.client.get(*args, **kwargs)
