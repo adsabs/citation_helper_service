@@ -62,8 +62,8 @@ def get_meta_data(**args):
     list = " OR ".join(map(lambda a: "bibcode:%s" % a, bibcodes))
     q = '%s' % list
     # Get the information from Solr
-    headers = {'X-Forwarded-Authorization':
-               request.headers.get('Authorization')}
+    headers = {'Authorization':
+               request.headers.get('X-Forwarded-Authorization', request.headers.get('Authorization', ''))}
     params = {'wt': 'json', 'q': q, 'fl': 'bibcode,title,first_author',
               'rows': current_app.config.get('CITATION_HELPER_MAX_HITS')}
     response = client().get(
