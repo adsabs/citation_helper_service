@@ -19,7 +19,7 @@ class Client:
     def get(self, *args, **kwargs):
         
         headers = {'Authorization':
-               request.headers.get('X-Forwarded-Authorization', request.headers.get('Authorization', ''))}
+               current_app.config.get('SERVICE_TOKEN', request.headers.get('X-Forwarded-Authorization', request.headers.get('Authorization', '')))}
         if 'headers' in kwargs:
             kwargs['headers'].update(headers)
         else:
