@@ -52,3 +52,7 @@ CITATION_HELPER_LOGGING = {
 DISCOVERER_PUBLISH_ENDPOINT = '/resources'
 # Advertise its own route within DISCOVERER_PUBLISH_ENDPOINT
 DISCOVERER_SELF_PUBLISH = False
+
+# must be here for adsmutils to override it using env vars
+# but if left empty (resolving to False) it won't be used
+SERVICE_TOKEN = None
