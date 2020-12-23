@@ -32,7 +32,7 @@ def get_data(**args):
         # list of bibcodes referenced by the paper at hand)
         params = {'wt': 'json', 'q': q, 'fl': 'reference,citation',
                   'rows': current_app.config['CITATION_HELPER_MAX_HITS']}
-        response = Client().get(
+        response = Client(config=current_app.config).get(
             current_app.config.get('CITATION_HELPER_SOLR_PATH'),
             params=params)
         if response.status_code != 200:
@@ -62,7 +62,7 @@ def get_meta_data(**args):
     # Get the information from Solr
     params = {'wt': 'json', 'q': q, 'fl': 'bibcode,title,first_author',
               'rows': current_app.config.get('CITATION_HELPER_MAX_HITS')}
-    response = Client().get(
+    response = Client(config=current_app.config).get(
         current_app.config.get('CITATION_HELPER_SOLR_PATH'), params=params
         )
     if response.status_code != 200:
