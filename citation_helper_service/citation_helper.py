@@ -3,6 +3,7 @@ Created on Nov 1, 2014
 
 @author: ehenneken
 '''
+from __future__ import absolute_import
 
 # general module imports
 import sys
@@ -10,8 +11,8 @@ import os
 import operator
 from itertools import groupby
 from flask import current_app
-from utils import get_data
-from utils import get_meta_data
+from .utils import get_data
+from .utils import get_meta_data
 
 __all__ = ['get_suggestions']
 

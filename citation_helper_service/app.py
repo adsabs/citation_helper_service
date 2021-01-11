@@ -1,5 +1,6 @@
+from __future__ import absolute_import
 from werkzeug.serving import run_simple
-from views import CitationHelper
+from .views import CitationHelper
 from flask_restful import Api
 from flask_discoverer import Discoverer
 from adsmutils import ADSFlask

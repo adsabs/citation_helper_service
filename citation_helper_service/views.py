@@ -1,7 +1,8 @@
+from __future__ import absolute_import
 from flask import current_app, request
 from flask_restful import Resource
 from flask_discoverer import advertise
-from citation_helper import get_suggestions
+from .citation_helper import get_suggestions
 import time
 
 

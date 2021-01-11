@@ -3,13 +3,14 @@ Created on Nov 1, 2014
 
 @author: ehenneken
 '''
+from __future__ import absolute_import
 from flask import current_app
 from flask import request
 import sys
 import os
 import urllib
 import simplejson as json
-from client import Client
+from .client import Client
 
 
 def get_data(**args):
