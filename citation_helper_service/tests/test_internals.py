@@ -72,7 +72,7 @@ class TestConfig(TestCase):
                     "CITATION_HELPER_SOLR_PATH",
                     "DISCOVERER_PUBLISH_ENDPOINT",
                     "DISCOVERER_SELF_PUBLISH"]
-        missing = [x for x in required if x not in self.app.config.keys()]
+        missing = [x for x in required if x not in list(self.app.config.keys())]
         self.assertTrue(len(missing) == 0)
 
 class TestMethods(TestCase):
