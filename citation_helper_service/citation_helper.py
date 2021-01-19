@@ -52,4 +52,4 @@ def get_suggestions(**args):
     # return results in required format
     return [{'bibcode': x, 'score': y, 'title': meta_dict[x]['title'],
              'author':meta_dict[x]['author']} for (x, y) in
-            paperFreq[:Nsuggestions] if x in list(meta_dict.keys())]
+            paperFreq[:Nsuggestions] if x in meta_dict.keys()]
