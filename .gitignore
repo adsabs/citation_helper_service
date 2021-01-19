@@ -1,6 +1,7 @@
 .cache
 *.py[co]
 *.swp
+*.bak
 # Packages
 *.egg
 *.egg-info

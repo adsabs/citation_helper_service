@@ -1,7 +1,10 @@
+from __future__ import absolute_import
+from builtins import map
+from builtins import str
 from flask import current_app, request
 from flask_restful import Resource
 from flask_discoverer import advertise
-from citation_helper import get_suggestions
+from .citation_helper import get_suggestions
 import time
 
 
@@ -18,7 +21,7 @@ class CitationHelper(Resource):
             current_app.logger.error('No bibcodes were provided to Citation Helper')
             return {'Error': 'Unable to get results!',
                     'Error Info': 'No bibcodes found in POST body'}, 200
-        bibcodes = map(str, request.json['bibcodes'])
+        bibcodes = list(map(str, request.json['bibcodes']))
         if len(bibcodes) > \
                 current_app.config.get('CITATION_HELPER_MAX_SUBMITTED'):
             current_app.logger.warning('Citation Helper called with %s bibcodes. Maximum is: %s!'%(len(bibcodes),current_app.config.get('CITATION_HELPER_MAX_SUBMITTED')))

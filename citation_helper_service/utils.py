@@ -3,13 +3,18 @@ Created on Nov 1, 2014
 
 @author: ehenneken
 '''
+from __future__ import absolute_import
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
 from flask import current_app
 from flask import request
 import sys
 import os
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import simplejson as json
-from client import Client
+from .client import Client
 
 
 def get_data(**args):
@@ -26,7 +31,7 @@ def get_data(**args):
         chunks(args['bibcodes'],
                current_app.config.get('CITATION_HELPER_CHUNK_SIZE')))
     for biblist in biblists:
-        q = " OR ".join(map(lambda a: "bibcode:%s" % a, biblist))
+        q = " OR ".join(["bibcode:%s" % a for a in biblist])
         # Get the information from Solr
         # We only need the contents of the 'reference' field (i.e. the
         # list of bibcodes referenced by the paper at hand)
@@ -57,7 +62,7 @@ def get_meta_data(**args):
     # This information can be retrieved with one single Solr query
     # (just an 'OR' query of a list of bibcodes)
     bibcodes = [bibcode for (bibcode, score) in args['results']]
-    list = " OR ".join(map(lambda a: "bibcode:%s" % a, bibcodes))
+    list = " OR ".join(["bibcode:%s" % a for a in bibcodes])
     q = '%s' % list
     # Get the information from Solr
     params = {'wt': 'json', 'q': q, 'fl': 'bibcode,title,first_author',
@@ -86,5 +91,5 @@ def chunks(l, n):
     """
     Yield successive n-sized chunks from l.
     """
-    for i in xrange(0, len(l), n):
+    for i in range(0, len(l), n):
         yield l[i:i + n]
