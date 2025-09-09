@@ -20,24 +20,24 @@ __all__ = ['get_suggestions']
 def get_suggestions(**args):
     # initializations
     papers = []
-    bibcodes = []
-    if 'bibcodes' in args:
-        bibcodes = args['bibcodes']
-    if len(bibcodes) == 0:
+    identifiers = []
+    if 'identifiers' in args:
+        identifiers = args['identifiers']
+    if len(identifiers) == 0:
         return []
     # Any overrides for default values?
     Nsuggestions = current_app.config.get('CITATION_HELPER_NUMBER_SUGGESTIONS')
     # get rid of potential trailing spaces
-    bibcodes = [a.strip() for a in bibcodes][
+    identifiers = [a.strip() for a in identifiers][
         :current_app.config.get('CITATION_HELPER_MAX_INPUT')]
     # start processing
     # get the citations for all publications (keeping multiplicity is
     # essential)
-    papers = get_data(bibcodes=bibcodes)
+    papers = get_data(identifiers=identifiers)
     if "Error" in papers:
         return papers
     # removes papers from the original list to get candidates
-    papers = [a for a in papers if a not in bibcodes]
+    papers = [a for a in papers if a not in identifiers]
     # establish frequencies of papers in results
     paperFreq = [(k, len(list(g))) for k, g in groupby(sorted(papers))]
     # and sort them, most frequent first
@@ -50,6 +50,17 @@ def get_suggestions(**args):
     if "Error"in meta_dict:
         return meta_dict
     # return results in required format
-    return [{'bibcode': x, 'score': y, 'title': meta_dict[x]['title'],
-             'author':meta_dict[x]['author']} for (x, y) in
-            paperFreq[:Nsuggestions] if x in meta_dict.keys()]
+    # Here we need to distinguish between whether the service received bibcodes
+    # or SciX IDs as input. Unless we convert bibcodes into SciX IDs in the very beginning
+    # (in the first case). In the future, we will be calling this service with just SciX IDs;
+    # at that point it will be less work to clean up this little conditional data processing
+    # than cleaning up all the logic to replace bibcodes by SciX IDs.
+    results = []
+    for p, s in paperFreq[:Nsuggestions]:
+        if p.startswith('scix:') and p in meta_dict:
+            results.append({'scix_id': p, 'score': s, 'title': meta_dict[p]['title'],
+             'author':meta_dict[p]['author']})
+        elif p in meta_dict:
+            results.append({'bibcode': p, 'score': s, 'title': meta_dict[p]['title'],
+             'author':meta_dict[p]['author']})
+    return results

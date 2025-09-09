@@ -10,6 +10,6 @@ Start with
   
 and do a request from the command line like so
 
-	curl -H "Content-Type: application/json" -X POST -d '{"bibcodes":["1980ApJS...44..169S","1980ApJS...44..193S"]}' http://localhost:4000
+	curl -H "Content-Type: application/json" -X POST -d '{"dentifiers":["scix:2BZR-T8P9-CBXT","scix:2BBY-K9P2-229B"]}' http://localhost:4000
 
 and you should get back results from the Citation Helper.

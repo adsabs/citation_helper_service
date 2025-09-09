@@ -13,38 +13,38 @@ from citation_helper_service.utils import get_meta_data
 from citation_helper_service.utils import chunks
 
 mockdata = [
-    {'id': '1', 'bibcode': 'a',
+    {'id': '1', 'scix_id': 'a',
      'title': ['a_title'],
      'first_author':'a_author',
      'reference':['x', 'z'],
      'citation':['p']},
-    {'id': '2', 'bibcode': 'b',
+    {'id': '2', 'scix_id': 'b',
      'title': ['b_title'],
      'first_author':'b_author',
      'reference':['d', 'x'],
      'citation':['p', 'c']},
-    {'id': '3', 'bibcode': 'c',
+    {'id': '3', 'scix_id': 'c',
      'title': ['c_title'],
      'first_author':'c_author',
      'reference':['e', 'y'],
      'citation':['p', 'y', 'a']},
-    {'id': '4', 'bibcode': 'x',
+    {'id': '4', 'scix_id': 'x',
      'title': ['x_title'],
      'first_author':'x_author',
      'reference':[],
      'citation':[]},
-    {'id': '5', 'bibcode': 'y',
+    {'id': '5', 'scix_id': 'y',
      'title': ['y_title'],
      'first_author':'y_author',
      'reference':[],
      'citation':[]},
     {'id': '6',
-     'bibcode': 'z',
+     'scix_id': 'z',
      'title': ['z_title'],
      'first_author':'z_author',
      'reference':[],
      'citation':[]},
-    {'id': '7', 'bibcode': 'p',
+    {'id': '7', 'scix_id': 'p',
      'title': ['p_title'],
      'first_author':'p_author',
      'reference':[],
@@ -103,8 +103,8 @@ class TestMethods(TestCase):
         expected_papers = [
             u'x', u'z', u'd', u'x', u'e', u'y', u'p',
             u'p', u'c', u'p', u'y', u'a']
-        bibcodes = ['a', 'b', 'c']
-        results = get_data(bibcodes=bibcodes)
+        identifiers = ['a', 'b', 'c']
+        results = get_data(identifiers=identifiers)
         self.assertEqual(results, expected_papers)
 
         expected_meta = {u'a': {'author': u'a_author et al.', 'title': u'a_title'},

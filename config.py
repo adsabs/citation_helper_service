@@ -7,7 +7,7 @@ CITATION_HELPER_MAX_INPUT = 500
 # Maximum number allowed in submitted bibcodes
 CITATION_HELPER_MAX_SUBMITTED = 100
 # Bibcode input list will be split into chunks of this size
-CITATION_HELPER_CHUNK_SIZE = 100
+CITATION_HELPER_CHUNK_SIZE = 20
 # The maximum number of suggestions returned by the service
 CITATION_HELPER_NUMBER_SUGGESTIONS = 10
 # Minimal score for papers to be included in results

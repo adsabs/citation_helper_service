@@ -17,19 +17,24 @@ class CitationHelper(Resource):
 
     def post(self):
         stime = time.time()
-        if not request.json or 'bibcodes' not in request.json:
-            current_app.logger.error('No bibcodes were provided to Citation Helper')
+        if not request.json or 'identifiers' not in request.json:
+            current_app.logger.error('No identifiers were provided to Citation Helper')
             return {'Error': 'Unable to get results!',
-                    'Error Info': 'No bibcodes found in POST body'}, 200
-        bibcodes = list(map(str, request.json['bibcodes']))
-        if len(bibcodes) > \
+                    'Error Info': 'No identifiers found in POST body'}, 200
+        # For backward compatibility, we check for both 'identifiers' and 'bibcodes' in the payload
+        try:
+            identifiers = request.json.get('identifiers',[]) + request.json.get('bibcodes',[])
+        except:
+            identifiers = []
+        if len(identifiers) > \
                 current_app.config.get('CITATION_HELPER_MAX_SUBMITTED'):
-            current_app.logger.warning('Citation Helper called with %s bibcodes. Maximum is: %s!'%(len(bibcodes),current_app.config.get('CITATION_HELPER_MAX_SUBMITTED')))
+            current_app.logger.warning('Citation Helper called with %s identifiers. Maximum is: %s!'%(len(identifiers),current_app.config.get('CITATION_HELPER_MAX_SUBMITTED')))
             return {'Error': 'Unable to get results!',
                     'Error Info':
-                    'Number of submitted bibcodes exceeds maximum number'}, 200
+                    'Number of submitted identifiers exceeds maximum number'}, 200
 
-        results = get_suggestions(bibcodes=bibcodes)
+        results = get_suggestions(identifiers=identifiers)
+
         if "Error" in results:
             msg = 'Citation Helper request request blew up'
             if 'Error Info' in results:

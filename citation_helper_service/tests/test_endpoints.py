@@ -9,49 +9,113 @@ from citation_helper_service import app
 import json
 import httpretty
 
+# mock data where references are represented by bibcode-like data
+# since we dealing with a bibcode scenario, the Solr docs are
+# assumed to have a 'bibcode' field (otherwise they would not participate
+# in this service to begin with)
 mockdata = [
-    {'id': '1', 'bibcode': 'a',
+    {'id': '1', 'scix_id': 'scix:a',
+     'bibcode':'a',
+     'identifier':['a', 'scix:a'],
      'title': ['a_title'],
      'first_author':'a_author',
      'reference':['x', 'z'],
      'citation':['p']},
-    {'id': '2', 'bibcode': 'b',
+    {'id': '2', 'scix_id': 'scix:b',
+     'bibcode':'b',
+     'identifier':['b', 'scix:b'],
      'title': ['b_title'],
      'first_author':'b_author',
      'reference':['d', 'x'],
      'citation':['p', 'c']},
-    {'id': '3', 'bibcode': 'c',
+    {'id': '3', 'scix_id': 'scix:c',
+     'bibcode':'c',
+     'identifier':['c', 'scix:c'],
      'title': ['c_title'],
      'first_author':'c_author',
      'reference':['e', 'y'],
      'citation':['p', 'y', 'a']},
-    {'id': '4', 'bibcode': 'x',
+    {'id': '4', 'scix_id': 'scix:x',
+     'bibcode':'x',
+     'identifier':['x', 'scix:x'],
      'title': ['x_title'],
      'first_author':'x_author',
      'reference':[],
      'citation':[]},
-    {'id': '5', 'bibcode': 'y',
+    {'id': '5', 'scix_id': 'scix:y',
+     'bibcode':'y',
+     'identifier':['y', 'scix:y'],
      'title': ['y_title'],
      'first_author':'y_author',
      'reference':[],
      'citation':[]},
     {'id': '6',
-     'bibcode': 'z',
+     'identifier':['z', 'scix:z'],
+     'bibcode':'z',
+     'scix_id': 'scix:z',
      'title': ['z_title'],
      'first_author':'z_author',
      'reference':[],
      'citation':[]},
-    {'id': '7', 'bibcode': 'p',
+    {'id': '7', 'scix_id': 'scix:p',
+     'identifier':['p', 'scix:p'],
+     'bibcode':'p',
      'title': ['p_title'],
      'first_author':'p_author',
      'reference':[],
      'citation':[]}
 ]
 
+# mock data where references are represented by scix-like data
+mockdata_scix = [
+    {'id': '1', 'scix_id': 'scix:a',
+     'identifier':['a', 'scix:a'],
+     'title': ['a_title'],
+     'first_author':'a_author',
+     'reference':['scix:x', 'scix:z'],
+     'citation':['scix:p']},
+    {'id': '2', 'scix_id': 'scix:b',
+     'identifier':['b', 'scix:b'],
+     'title': ['b_title'],
+     'first_author':'b_author',
+     'reference':['scix:d', 'scix:x'],
+     'citation':['scix:p', 'scix:c']},
+    {'id': '3', 'scix_id': 'scix:c',
+     'identifier':['c', 'scix:c'],
+     'title': ['c_title'],
+     'first_author':'c_author',
+     'reference':['scix:e', 'scix:y'],
+     'citation':['scix:p', 'scix:y', 'scix:a']},
+    {'id': '4', 'scix_id': 'scix:x',
+     'identifier':['x', 'scix:x'],
+     'title': ['x_title'],
+     'first_author':'x_author',
+     'reference':[],
+     'citation':[]},
+    {'id': '5', 'scix_id': 'scix:y',
+     'identifier':['y', 'scix:y'],
+     'title': ['y_title'],
+     'first_author':'y_author',
+     'reference':[],
+     'citation':[]},
+    {'id': '6',
+     'identifier':['z', 'scix:z'],
+     'scix_id': 'scix:z',
+     'title': ['z_title'],
+     'first_author':'z_author',
+     'reference':[],
+     'citation':[]},
+    {'id': '7', 'scix_id': 'scix:p',
+     'identifier':['p', 'scix:p'],
+     'title': ['p_title'],
+     'first_author':'p_author',
+     'reference':[],
+     'citation':[]}
+]
 
 class TestBadRequests(TestCase):
 
-    '''Tests that no or too many submitted bibcodes result
+    '''Tests that no or too many submitted identifiers result
        in the proper responses'''
 
     def create_app(self):
@@ -60,23 +124,23 @@ class TestBadRequests(TestCase):
         return app_
 
     def testNoBibcodesSubmitted(self):
-        '''When no input bibcodes are submitted an error should be raised'''
+        '''When no input identifiers are submitted an error should be raised'''
         r = self.client.post(
             url_for('citationhelper'),
-            data=dict(bibcodes=[]))
+            data=dict(identifiers=[]))
         self.assertTrue(r.status_code == 200)
         self.assertTrue('Error' in r.json)
         self.assertTrue(r.json.get('Error') == 'Unable to get results!')
 
     def testTooManyBibcodes(self):
-        '''When more than the maximum input bibcodes are submitted an error
+        '''When more than the maximum input identifiers are submitted an error
            should be raised'''
-        bibcodes = ["bibcode"] * \
+        identifiers = ["scix_id"] * \
             (self.app.config.get('CITATION_HELPER_MAX_SUBMITTED') + 1)
         r = self.client.post(
             url_for('citationhelper'),
             content_type='application/json',
-            data=json.dumps({'bibcodes': bibcodes}))
+            data=json.dumps({'identifiers': identifiers}))
         self.assertTrue(r.status_code == 200)
         self.assertTrue('Error' in r.json)
         self.assertTrue(r.json.get('Error') == 'Unable to get results!')
@@ -92,8 +156,43 @@ class TestGoodRequests(TestCase):
         return app_
 
     @httpretty.activate
-    def test_service_results(self):
+    def test_service_results_scixid(self):
         '''Test to see if mock data produces expected results'''
+        # In this version the references/citations are stored in SciX ID-like format
+        httpretty.register_uri(
+            httpretty.GET, self.app.config.get(
+                'CITATION_HELPER_SOLR_PATH'),
+            content_type='application/json',
+            status=200,
+            body="""{
+            "responseHeader":{
+            "status":0, "QTime":0,
+            "params":{ "fl":"reference,citation", "indent":"true",
+            "wt":"json", "q":"*"}},
+            "response":{"numFound":10456930,"start":0,"docs":%s
+            }}""" % json.dumps(mockdata_scix))
+
+        expected = [{u'title': u'p_title', u'scix_id': u'scix:p', u'score': 3,
+                     u'author': u'p_author et al.'},
+                    {u'title': u'x_title', u'scix_id': u'scix:x',
+                        u'score': 2, u'author': u'x_author et al.'},
+                    {u'title': u'y_title', u'scix_id': u'scix:y', u'score': 2,
+                     u'author': u'y_author et al.'}]
+
+        identifiers = ['scix:a', 'scix:b', 'scix:c']
+
+        r = self.client.post(
+            url_for('citationhelper'),
+            content_type='application/json',
+            data=json.dumps({'identifiers': identifiers}))
+
+        self.assertTrue(r.status_code == 200)
+        self.assertEqual(expected, r.json)
+
+    @httpretty.activate
+    def test_service_results_bibc(self):
+        '''Test to see if mock data produces expected results'''
+        # In this version the references/citations are stored in bibcode-like format
         httpretty.register_uri(
             httpretty.GET, self.app.config.get(
                 'CITATION_HELPER_SOLR_PATH'),
@@ -114,16 +213,15 @@ class TestGoodRequests(TestCase):
                     {u'title': u'y_title', u'bibcode': u'y', u'score': 2,
                      u'author': u'y_author et al.'}]
 
-        bibcodes = ['a', 'b', 'c']
+        identifiers = ['a', 'b', 'c']
 
         r = self.client.post(
             url_for('citationhelper'),
             content_type='application/json',
-            data=json.dumps({'bibcodes': bibcodes}))
+            data=json.dumps({'identifiers': identifiers}))
 
         self.assertTrue(r.status_code == 200)
         self.assertEqual(expected, r.json)
-
 
 class TestSolrError(TestCase):
 
@@ -150,16 +248,16 @@ class TestSolrError(TestCase):
             "response":{"numFound":10456930,"start":0,"docs":[]
             }}""")
 
-        bibcodes = ['a', 'b', 'c']
+        identifiers = ['a', 'b', 'c']
 
         r = self.client.post(
             url_for('citationhelper'),
             content_type='application/json',
-            data=json.dumps({'bibcodes': bibcodes}))
+            data=json.dumps({'identifiers': identifiers}))
 
         self.assertTrue(r.status_code == 200)
         self.assertTrue('Error' in r.json)
-        self.assertTrue('Unable to get results' in r.json.get('Error'))
+        self.assertTrue('Unable to get citation lists!' in r.json.get('Error'))
 
 
 class TestNoRequests(TestCase):
@@ -187,12 +285,12 @@ class TestNoRequests(TestCase):
             "response":{"numFound":0,"start":0,"docs":[]
             }}""")
 
-        bibcodes = ['a', 'b', 'c']
+        identifiers = ['a', 'b', 'c']
 
         r = self.client.post(
             url_for('citationhelper'),
             content_type='application/json',
-            data=json.dumps({'bibcodes': bibcodes}))
+            data=json.dumps({'identifiers': identifiers}))
 
         self.assertTrue(r.status_code == 200)
         self.assertTrue('Error' in r.json)
